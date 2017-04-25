@@ -20,6 +20,7 @@ let s3fsImpl = new S3FS('roeetestbucket123' , {
   secretAccessKey: process.env.ACCESSKEYID
 });
 
+
 s3fsImpl.create();
 
 app.use(function(req, res, next) {
