@@ -1,10 +1,4 @@
 import React, { Component } from 'react';
-import { Editor } from 'react-draft-wysiwyg';
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import axios from 'axios';
-import draftToHtml from 'draftjs-to-html';
-import { convertToRaw } from 'draft-js';
-import FormData from 'form-data';
 import './App.css';
 
 //COMPONENTS
@@ -30,7 +24,7 @@ class App extends Component {
           singleFileTitle={heroList[i].title}
           singleFileCredit={heroList[i].credit}
           singleFileName={heroList[i].name}
-          onClick={()=>{this.props.route.removeSingleHero(i)}}
+          onClick={() => { this.props.route.removeSingleHero(i) }}
         />
       )
     }
@@ -67,6 +61,14 @@ class App extends Component {
             onChange={this.props.route.onTitleChange}
           />
         </div>
+        <div className="summerybox">
+          <h2>Summery</h2>
+          <input
+            id='summeryInput'
+            type='text'
+            onChange={this.props.route.onSummeryChange}
+          />
+        </div>
         <div className="showAtHomePageBox">
           <h4>show at home page:</h4>
           <input
@@ -87,13 +89,7 @@ class App extends Component {
         </div>
         <div className="articleBodyBox" >
           <h2>artical Body</h2>
-          <Editor
-            toolbarClassName="home-toolbar"
-            wrapperClassName="home-wrapper"
-            editorClassName="home-editor"
-            onEditorStateChange={this.props.route.onEditorStateChange}
-            toolbar={{ image: { uploadCallback: this.uploadImage } }}
-          />
+          {this.props.route.editor}
         </div>
         <div className="publish">
           <button onClick={this.props.route.onPublishClick}>
