@@ -6,14 +6,18 @@ let fs = require('fs');
 let S3FS = require('s3fs');
 let multiparty = require('connect-multiparty');
 let multer = require('multer');
+var assert = require('assert');
+var env = require('node-env-file');
+
+env(__dirname + '/.env');
 
 let multipartyMiddleware = multiparty(); 
 
 let upload = multer({ dest : 'public/uploads/'})
 
 let s3fsImpl = new S3FS('roeetestbucket123' , {
-  accessKeyId: "AKIAI4KZAGEWL74J363Q",
-  secretAccessKey: "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"
+  accessKeyId: process.env.KEYID,
+  secretAccessKey: process.env.ACCESSKEYID
 });
 
 s3fsImpl.create();
