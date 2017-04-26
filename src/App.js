@@ -8,15 +8,52 @@ import SingleFile from './Singlefile';
 
 
 class App extends Component {
+  constructor() {
+    super()
+    this.state = {
+      newArticle: { heroObjects: [] }
+    }
+    this.onUploadFilesFormSubmit = this.onUploadFilesFormSubmit.bind(this);
+  }
+
+
+  onUploadFilesFormSubmit() {
+    console.log('Runingggg')
+    let file = document.getElementById("uploadFilesFile").files[0];
+    let title = document.getElementById("uploadFilesTitle").value;
+    let credit = document.getElementById("uploadFilesCredit").value;
+    if (file && title && credit) {
+      let heroObject = {
+        type: file.type,
+        title: title,
+        credit: credit,
+        url: `https://s3.amazonaws.com/roeetestbucket123/${file.name}`,
+        name: `${file.name}`
+      };
+      let newState = {...this.state};
+      newState.newArticle.heroObjects.push(heroObject);
+      this.setState({
+        newArticle: newState.newArticle
+      })
+      // this.uploadFile(file)
+    } else {
+      alert('you forgot somthing')
+    }
+    this.props.route.onUploadFilesFormSubmit();
+  }
 
 
   componentDidMount() {
     document.getElementById("homePageCheckbox").checked = true
   }
+  componentWillMount() {
+    console.log(this.props.route.newArticleHeros)
+  }
+
 
 
   render() {
-    let heroList = this.props.route.newArticleHeros;
+    let heroList = this.state.newArticle.heroObjects;
     let filesList = []
     for (let i = 0; i < heroList.length; i++) {
       filesList.push(
@@ -24,7 +61,14 @@ class App extends Component {
           singleFileTitle={heroList[i].title}
           singleFileCredit={heroList[i].credit}
           singleFileName={heroList[i].name}
-          onClick={() => { this.props.route.removeSingleHero(i) }}
+          onClick={() => { 
+            this.props.route.removeSingleHero(i);
+            let newState = {...this.state};
+            newState.newArticle.heroObjects.splice(i,1);
+            this.setState({
+              newArticle: newState.newArticle
+            })
+           }}
         />
       )
     }
@@ -45,7 +89,7 @@ class App extends Component {
               credit: <input type='text' id='uploadFilesCredit' />
             </p>
             <p>
-              <input type="button" value="Submit" onClick={this.props.route.onUploadFilesFormSubmit} />
+              <input type="button" value="Submit" onClick={this.onUploadFilesFormSubmit} />
             </p>
           </form>
         </div>
@@ -92,7 +136,14 @@ class App extends Component {
           {this.props.route.editor}
         </div>
         <div className="publish">
-          <button onClick={this.props.route.onPublishClick}>
+          <button onClick={()=>{
+            this.props.route.onPublishClick();
+            let newState = {...this.state};
+            newState.newArticle.heroObjects = [];
+            this.setState({
+              newArticle: newState.newArticle,
+            })
+            }}>
             publish
           </button>
         </div>
