@@ -12,10 +12,13 @@ class HomeAdmin extends Component {
     constructor() {
         super()
         this.state = {
-            newGroup: false
+            counter: 0,
+            newGroup: false,
+            allArticles: []
         }
         this.newGroup = this.newGroup.bind(this);
         this.arrayToRender = this.arrayToRender.bind(this);
+        this.mountingOnce = this.mountingOnce;
     }
 
 
@@ -32,7 +35,14 @@ class HomeAdmin extends Component {
             listToRender.push(
                 <SingleHomeArticle
                     name={articles[i].name}
-                    removeSingleArticle={this.props.route.removeSingleArticle}
+                    removeSingleArticle={() => {
+                        this.props.route.removeSingleArticle(i);
+                        {/*let newallArticles = [...this.state.allArticles]
+                        newallArticles.splice(i, 1);
+                        this.setState({
+                            allArticles: newallArticles
+                        }, () => { console.log(this.state) })*/}
+                    }}
                     index={i}
                     category={articles[i].category}
                 />
@@ -43,6 +53,18 @@ class HomeAdmin extends Component {
                 {listToRender}
             </div>
         )
+    }
+
+
+
+    componentWillMount() {
+        if (true) {
+            console.log(this.props.route.allArticlesList);
+            this.setState({
+                allArticles: this.props.route.allArticlesList,
+                counter:1
+            })
+        }
     }
 
 
@@ -87,10 +109,11 @@ class HomeAdmin extends Component {
         }
 
 
-        const scienceList = this.arrayToRender(this.props.route.scienceList); //ARTICLES LISTS
-        const healthList = this.arrayToRender(this.props.route.healthList);
-        const technologyList = this.arrayToRender(this.props.route.technologyList);
-        const allArticlesList = this.arrayToRender(this.props.route.allArticlesList);
+        // const scienceList = this.arrayToRender(this.props.route.scienceList); //ARTICLES LISTS
+        // const healthList = this.arrayToRender(this.props.route.healthList);
+        // const technologyList = this.arrayToRender(this.props.route.technologyList);
+
+        let allArticlesList = this.arrayToRender(this.state.allArticles);
 
 
         return (

@@ -41,7 +41,7 @@ class SingleHomeArticle extends Component {
     }
     render() {
         // this.checkIfGrouped(this.props.index, this.props.category , this.props.groupButtonStyle);
-        let button = (<button className="removeSingleHomeArticlee" onClick={() => { this.props.removeSingleArticle(this.props.index, this.props.category) }}>
+        let button = (<button className="removeSingleHomeArticlee" onClick={() => { this.props.removeSingleArticle(this.props.index) }}>
             remove
                 </button>);
         if (this.props.groupSingleArticle) { // takes care of the button color
@@ -52,8 +52,8 @@ class SingleHomeArticle extends Component {
             }
             button = (<button style={style} className="groupSingleHomeArticle" onClick={() => {
 
-                this.props.groupSingleArticle(this.props.index, this.props.category); //all this code runs onClick
-                let isGrouped = this.props.groupButtonStyle(this.props.index, this.props.category);
+                this.props.groupSingleArticle(this.props.index , this.props.name); //all this code runs onClick
+                let isGrouped = this.props.groupButtonStyle(this.props.index);
                 if (typeof isGrouped === 'number') {
                     this.setState({
                         isGrouped: true,

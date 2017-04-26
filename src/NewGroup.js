@@ -66,9 +66,11 @@ class NewGroup extends Component {
     }
 
     render() {
-        const scienceList = this.arrayToRender(this.props.route.scienceList); //ARTICLES LISTS
-        const healthList = this.arrayToRender(this.props.route.healthList);
-        const technologyList = this.arrayToRender(this.props.route.technologyList);
+        // const scienceList = this.arrayToRender(this.props.route.scienceList); //ARTICLES LISTS
+        // const healthList = this.arrayToRender(this.props.route.healthList);
+        // const technologyList = this.arrayToRender(this.props.route.technologyList);
+        const articlesList = this.arrayToRender(this.props.route.allArticles);
+
 
         // list of hero's
         let heroList = this.state.newGroup.heroObjects;
@@ -79,14 +81,14 @@ class NewGroup extends Component {
                     singleFileTitle={heroList[i].title}
                     singleFileCredit={heroList[i].credit}
                     singleFileName={heroList[i].name}
-                    onClick={() => { 
+                    onClick={() => {
                         this.props.route.removeSingleHero(i);
-                        let newState = {...this.state};
-                        newState.newGroup.heroObjects.splice(i ,1);
+                        let newState = { ...this.state };
+                        newState.newGroup.heroObjects.splice(i, 1);
                         this.setState({
                             newGroup: newState.newGroup
                         })
-                        }}
+                    }}
                 />
             )
         }
@@ -94,12 +96,8 @@ class NewGroup extends Component {
         return (
             <div>
                 <div>
-                    Science
-                        {scienceList}
-                    Health
-                        {healthList}
-                    Technology
-                        {technologyList}
+                   ARTICLES
+                   {articlesList}
                 </div>
                 <div className="uploadFiles">
                     <form id='uploadFilesForm'>

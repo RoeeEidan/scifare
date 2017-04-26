@@ -17,7 +17,7 @@ class AdminRouter extends Component {
     super()
     this.state = {
       heroObjects: [],// {type:'' , url: '' , title:'' , credit: '' name: ''}
-      allArticles:[],
+      allArticles: [],
       scince: [],
       health: [],
       technology: [],
@@ -230,48 +230,48 @@ class AdminRouter extends Component {
   }
 
 
-  removeGroup(index, catagory, name, groupIndex) {
+  removeGroup(index, name, groupIndex) {
     let newState = { ...this.state };
-    let catagoryArray;
-    switch (catagory) {
-      case "Science":
-        catagoryArray = newState.scince
-        break;
-      case "Health":
-        catagoryArray = newState.health
-        break;
-      case "Technology":
-        catagoryArray = newState.technology
-        break;
-      default: alert("this shouldn alert")
-    }
-    catagoryArray[index].articleGroups.splice(groupIndex, 1); // removing from the article itself
+    let articlesArray = [...this.state.allArticles];
+    // switch (catagory) {
+    //   case "Science":
+    //     articlesArray = newState.scince
+    //     break;
+    //   case "Health":
+    //     articlesArray = newState.health
+    //     break;
+    //   case "Technology":
+    //     articlesArray = newState.technology
+    //     break;
+    //   default: alert("this shouldn alert")
+    // }
+    articlesArray[index].articleGroups.splice(groupIndex, 1); // removing from the article itself
     for (let i = 0; i < newState.newGroup.relatedArticles.length; i++) {
-      if (newState.newGroup.relatedArticles[i] === catagoryArray[index]) {
+      if (newState.newGroup.relatedArticles[i] === articlesArray[index]) {
         newState.newGroup.relatedArticles.splice(i, 1) // removes the article from the group
       }
     }
   }
 
 
-  isGrouped(index, catagory) {
+  isGrouped(index) {
     let name = this.state.newGroup.name;
     let newState = { ...this.state };
-    let catagoryArray;
-    switch (catagory) {
-      case "Science":
-        catagoryArray = newState.scince
-        break;
-      case "Health":
-        catagoryArray = newState.health
-        break;
-      case "Technology":
-        catagoryArray = newState.technology
-        break;
-      default: alert("this shouldn alert")
-    }
-    if (catagoryArray[index].articleGroups) {
-      let thisGroups = catagoryArray[index].articleGroups;
+    let articlesArray = [...this.state.allArticles]
+    // switch (catagory) {
+    //   case "Science":
+    //     articlesArray = newState.scince
+    //     break;
+    //   case "Health":
+    //     articlesArray = newState.health
+    //     break;
+    //   case "Technology":
+    //     articlesArray = newState.technology
+    //     break;
+    //   default: alert("this shouldn alert")
+    // }
+    if (articlesArray[index].articleGroups) {
+      let thisGroups = articlesArray[index].articleGroups;
       for (let i = 0; i < thisGroups.length; i++) {
         if (thisGroups[i] === name) {
           return i;
@@ -284,34 +284,38 @@ class AdminRouter extends Component {
   }
 
 
-  groupSingleArticle(index, catagory) {
+  groupSingleArticle(index , articleName) {
     let newState = { ...this.state };
-    let isGrouped = this.isGrouped(index, catagory, newState.newGroup.name); //returns either false or the index of the group
+    let isGrouped = this.isGrouped(index); //returns either false or the index of the group
     if (isGrouped || isGrouped === 0) {
-      this.removeGroup(index, catagory, newState.newGroup.name, isGrouped);
-    } else {
-      let thisArticle;
-      switch (catagory) {
-        case "Science":
-          thisArticle = newState.scince[index]
-          newState.scince[index].articleGroups.push(newState.newGroup.name)// pushs the group name in to the article
-          break;
-        case "Health":
-          thisArticle = newState.health[index]
-          newState.health[index].articleGroups.push(newState.newGroup.name)
-          break;
-        case "Technology":
-          thisArticle = newState.technology[index]
-          newState.technology[index].articleGroups.push(newState.newGroup.name)
-          break;
-        default: alert("this shouldn alert")
-      }
+      this.removeGroup(index, newState.newGroup.name, isGrouped); // removes the group from the article
+      for(let i = 0 ; i < newState.newGroup.relatedArticles.length; i++ ){//this is the way to the articles  
+        if(newState.newGroup.relatedArticles[i].name === articleName ){// removers the article from the group
+          newState.newGroup.relatedArticles.splice(i , 1);
+        }
+    }
+  } else {
+      // switch (catagory) {
+      //   case "Science":
+      //     thisArticle = newState.scince[index]
+      //     newState.scince[index].articleGroups.push(newState.newGroup.name)// pushs the group name in to the article
+      //     break;
+      //   case "Health":
+      //     thisArticle = newState.health[index]
+      //     newState.health[index].articleGroups.push(newState.newGroup.name)
+      //     break;
+      //   case "Technology":
+      //     thisArticle = newState.technology[index]
+      //     newState.technology[index].articleGroups.push(newState.newGroup.name)
+      //     break;
+      //   default: alert("this shouldn alert")
+      // }
+      let thisArticle = newState.allArticles[index];
+      thisArticle.articleGroups.push(newState.newGroup.name)
       newState.newGroup.relatedArticles.push(thisArticle); // pushs the article to the group related array
       this.setState({
         newGroup: newState.newGroup,
-        health: newState.health,
-        technology: newState.technology,
-        scince: newState.scince
+        allArticles: newState.allArticles
       })
     }
     console.log(this.state);
@@ -337,15 +341,18 @@ class AdminRouter extends Component {
     let groupName = this.state.groups[i].name;
     let newState = { ...this.state };
     newState.groups.splice(i, 1);
-    let newScience = this.deepCatagoryGroupRemove(groupName, newState.scince);
-    let newHealth = this.deepCatagoryGroupRemove(groupName, newState.health);
-    let newTechnology = this.deepCatagoryGroupRemove(groupName, newState.technology);
+    // let newScience = this.deepCatagoryGroupRemove(groupName, newState.scince);
+    // let newHealth = this.deepCatagoryGroupRemove(groupName, newState.health);
+    // let newTechnology = this.deepCatagoryGroupRemove(groupName, newState.technology);
+    let newAllArticles = this.deepCatagoryGroupRemove(groupName, newState.allArticles);
+
     this.setState({
       groups: newState.groups,
-      health: newHealth,
-      technology: newTechnology,
-      scince: newScience
-    },()=>{console.log(this.state)})
+      allArticles: newAllArticles
+      // health: newHealth,
+      // technology: newTechnology,
+      // scince: newScience
+    }, () => { console.log(this.state) })
   }
 
 
@@ -396,25 +403,27 @@ class AdminRouter extends Component {
   }
 
 
-  removeSingleArticle(i, catagory) {
-    console.log(i, catagory);
-    let newState = { ...this.state };
-    switch (catagory) {
-      case "Science":
-        newState.scince.splice(i, 1);
-        break;
-      case "Health":
-        newState.health.splice(i, 1);
-        break;
-      case "Technology":
-        newState.technology.splice(i, 1);
-        break;
-      default: alert("this shouldn alert")
-    }
+  removeSingleArticle(i) {
+    console.log('runinggggg');
+    let newState = {...this.state};
+     // all this removes the article from groups that he is related to
+      for(let z = 0 ; z < newState.allArticles[i].articleGroups.length; z++){//loops through the article that is removed groups
+        let groupName = newState.allArticles[i].articleGroups[z]
+        for(let w = 0; w < newState.groups.length; w++){ // loops through the groups array
+          for(let t = 0; t < newState.groups[w].relatedArticles.length; t++){ // loops through the related articles of each group
+            if(newState.groups[w].relatedArticles[t] === newState.allArticles[i]){
+                newState.groups[w].relatedArticles.splice(t ,1)
+            }
+          }
+        }
+      }
+    
+    newState.allArticles.splice(i, 1);
     this.setState({
-      scince: newState.scince,
-      health: newState.health,
-      technology: newState.technology,
+      allArticles: newState.allArticles,
+      groups: newState.groups
+    },()=>{
+      console.log(this.state)
     })
   }
 
@@ -452,7 +461,7 @@ class AdminRouter extends Component {
     newState.newArticle.heroObjects = [];
     this.setState({
       newArticle: newState.newArticle
-    },()=>{console.log(this.state)})
+    }, () => { console.log(this.state) })
   }
 
 
@@ -665,6 +674,7 @@ class AdminRouter extends Component {
             onTitleChange={this.onNewGroupTitleChange}
             onSummeryChange={this.onNewGroupSummeryChange}
             onUploadFilesFormSubmit={this.onUploadNewGroupForm}
+            allArticles={this.state.allArticles}
             editor={<Editor
               toolbarClassName="home-toolbar"
               wrapperClassName="home-wrapper"
